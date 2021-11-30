@@ -7,3 +7,6 @@ Erdos_Renyi.py contains functions for creations and drawing of a graph with n,p 
 Barabasi.py contains functions for creations and drawing of Barabasi n,m network
 
 Zakari.py contains functions for creations and drawing ofzakary karate club.
+
+Geometricgraph.py contain example of 3d solid to graph and adding theme together
+
