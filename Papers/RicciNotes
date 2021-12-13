@@ -1,0 +1,29 @@
+RicciNotes
+
+How to implement a diffusion which considers also curvature?
+
+Well, first I have to sum up all the curvatures associated to edges
+linked to a given vertex, i.e. given a node i and w_ij is the curvature
+of the link i--j
+
+W_i = sum_{k=0}^{n} |w_ik|
+
+now for each node one should normalize the curvatures as
+
+u_ij = w_ij / W_i
+
+Now the quantity over the node i (here q_i, can also be a fraction of the whole quantity
+determined by an input factor alpha) is diffused according to
+
+q_j(t+1,from i) = u_ij * q_i
+
+can be generalized to the contributions of all vertices different from j by turning
+u_Aj into a matrix ---> U_ij , how to implement it?
+
+- W_i should simply be the sum of the values on a line i in the Ricci matrix
+
+- then renormalize the vector of quantities by dividing q_i/W_i
+
+- now if I am right it should be 
+  q_i(t+1) = |R_ij| * q_i(t)/W_i(t)
+
