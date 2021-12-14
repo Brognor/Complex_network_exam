@@ -1,7 +1,20 @@
 import networkx as nx
 import networkit as nt
-import numpy as np 
+import numpy as np
+import matplotlib.pyplot as plt
+import imageio
+import random
+import os
+
 """Small library to implement Laplacian evolution"""
+
+
+def normalize(v): #Normalize the vector given as input
+    norm = np.linalg.norm(v)
+    if norm == 0: 
+       return v
+    return v / norm
+
 
 def A(G):
     return nx.linalg.graphmatrix.adjacency_matrix(G) #A is initizalized as the adjacency matrix of the graph
@@ -15,9 +28,93 @@ def D(G):
 def transition_matrix(G):
     return (A(G)*(np.linalg.inv(D(G).toarray())))
 
-def evolution(G,vec,n_step):
-    """This function realizes the diffusion of the vector vec on the graph for a number of step=n_step"""
+
+    #####################################à
+
+def evolution(G,vec,n_step,norm=True):
+    """This function realizes the diffusion of the vector vec on the graph for a number of step=n_step, 
+    if norm is true it normalize the input vector"""
+    if norm:
+        vec=normalize(vec)
     for i in range(n_step):
         vec=transition_matrix(G).dot(vec)
     return vec
+
+########################à
+
+
+def evolution_collection(G,vec,n_step,norm=True):
+    """This function realizes the diffusion of the vector vec on the graph for a number of step=n_step and return 
+    an array with all the intermediate graphs"""
+
+    graph_array=np.empty((n_step+1,len(vec)))
+    if norm:
+        vec=normalize(vec)
+    graph_array[0]=vec
+    for i in range(n_step):
+        vec=transition_matrix(G).dot(vec)
+        graph_array[i+1]=vec
+    return graph_array
+
+
+#############################à
+
+def plot_evolution(G,vec,norm=True,lenght=15,height=15,node_dimension=300):
+    if norm:
+        vec=normalize(vec)
+    plt.figure(figsize=(lenght,height)) 
+    nx.draw_networkx(G,labels={n: np.around(vec,2)[n] for n in G},node_color=vec,cmap=plt.cm.Reds,node_size=node_dimension)
+
+
+    #######################################
+
+def plot_all_evolution(G,vec_collection,norm=True,saveall=False,lenght=15,height=15,pause=1,node_dimension=300):
+
+    """Take an array of vector and a graph, each element of the vector represent the label of the node and create a gif.
+    The i-th image of the gif is the graph with the label in the i-th vector of the array"""
+    if norm:
+        for i in range(len(vec_collection)):
+            normalize(vec_collection[i])
+    
+    filenames=[]
+    numerfig=1
+
+    layout=nx.spring_layout(G) #needed to avoid different spring in each figure
+
+    for vec in vec_collection:
+
+        plt.figure(figsize=(lenght,height))  #adjustable lenght and height
+        nx.draw_networkx(G,pos=layout,labels={n: np.around(vec,2)[n] for n in G},node_color=vec,cmap=plt.cm.Reds,node_size=node_dimension)
+        filename = f'{numerfig}.png'
+        filenames.append(filename)
+
+        
+       
+        plt.title('step%s' %numerfig)
+        plt.savefig(filename)
+        plt.clf()
+        numerfig=numerfig+1
+        plt.close() #useful to avoid memory problems
+
+    images=[]
+
+    for filename in filenames:
+        images.append(imageio.imread(filename))
+        
+    imageio.mimsave('./evolution.gif', images,duration=pause)
+
+    if not saveall: #if saveall is as given we cancel all the intermediate images mantaining only the gif
+        for filename in set(filenames):
+            os.remove(filename)
+
+
+    ####################################
+
+
+
+
+
+
+    
+
 
