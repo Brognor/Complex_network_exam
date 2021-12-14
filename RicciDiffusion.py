@@ -54,7 +54,7 @@ def RicciEvolve_sign (G,vec,n_step):
         W = [0] * len(list(G.nodes))
         for n1 in list(G.nodes):
             for n2 in list(G.neighbors(n1)):
-               if(G_orc[n1][n2]["ricciCurvature"]<0):
+               if(G[n1][n2]["ricciCurvature"]<0):
                   W[n1] += abs(G[n1][n2]["ricciCurvature"])
     
         norm_vec = [0] * len(vec)
@@ -65,7 +65,7 @@ def RicciEvolve_sign (G,vec,n_step):
     
         for n1 in list(G.nodes):
             for n2 in list(G.neighbors(n1)):
-                if(G_orc[n1][n2]["ricciCurvature"]<0):
+                if(G[n1][n2]["ricciCurvature"]<0):
                   vec[n1] += abs(G[n1][n2]["ricciCurvature"]) * norm_vec[n2]
                   vec[n2] -= abs(G[n1][n2]["ricciCurvature"]) * norm_vec[n2]
         
