@@ -3,13 +3,13 @@ import networkit as nt
 import numpy as np 
 """Small library to implement Laplacian evolution"""
 def A(G):
-    return nx.adjacency.matrix(G) #A is initizalized as the adjacency matrix of the graph
+    return nx.linalg.graphmatrix.adjacency_matrix(G) #A is initizalized as the adjacency matrix of the graph
 
 def L(G):
-    return nx.laplacian_matrix(G) #L is initizalized as the lapalcian matrix of the graph
+    return nx.linalg.laplacianmatrix.laplacian_matrix(G) #L is initizalized as the lapalcian matrix of the graph
 
 def D(G):
-    return L(G)+A (G)#D is the degree matrix
+    return ( L(G)+ A(G) ) #D is the degree matrix
 
 def transition_matrix(G):
     return (A(G)*np.linalg.inv(D(G)))
