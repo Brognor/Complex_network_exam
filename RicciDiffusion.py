@@ -19,8 +19,9 @@ from GraphRicciCurvature.OllivierRicci import OllivierRicci
 
 
 def RicciEvolve (G,vec,n_step):
-    W = [0] * len(list(G.nodes))
+   
     for t in range(n_step):
+        W = [0] * len(list(G.nodes))
         for n1 in list(G.nodes):
             for n2 in list(G.neighbors(n1)):
                 W[n1] += abs(G[n1][n2]["ricciCurvature"])
