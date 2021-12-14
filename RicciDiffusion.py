@@ -40,7 +40,7 @@ def RicciEvolve (G,vec,n_step):
         
         check_parameter = abs( sum(vec)- sum(vec_copy) )/sum(vec)
 
-        if check_parameter < 10^(-4):
+        if check_parameter < 0.0001:
             vec = vec_copy
         else: 
             print("mass is not conserved, something happened")
@@ -71,7 +71,7 @@ def RicciEvolve_sign (G,vec,n_step):
         
         check_parameter = abs( sum(vec)- sum(vec_copy) )/sum(vec)
 
-        if check_parameter < 10^(-4):
+        if check_parameter < 0.0001:
             vec = vec_copy
         else: 
             print("mass is not conserved, something happened")
