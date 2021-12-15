@@ -9,7 +9,7 @@ import numpy as np
 l_b_max = nx.diameter(G)
 
 
-def G_prime(G, l_B):
+def G_prime(G, l_b):
     G_prime = nx.Graph()
     N_prime = len(G.nodes)
     G_prime.add_nodes_from(G)
@@ -17,7 +17,7 @@ def G_prime(G, l_B):
     for n1 in range(N_prime):
         for n2 in range(N_prime):
             try:
-                if nx.shortest_path_length(G, n1, n2) > l_B:
+                if nx.shortest_path_length(G, n1, n2) > l_b:
                     G_prime.add_edge(n1, n2)
             except nx.NetworkXNoPath:
                 return 0
@@ -32,7 +32,7 @@ def Greedy_coloring(G):
 def dimension(G, l_b_max):
     N_bs = np.zeros(l_b_max)
     l_bs = np.zeros(l_b_max)
-    for l_b in range(1, l_b_max, 1):
+    for l_b in range(1, l_b_max+1, 1):
         G1 = G_prime(G, l_b)
         d = Greedy_coloring(G1)
         N_b = len(set(d.values()))
@@ -44,4 +44,4 @@ def dimension(G, l_b_max):
     print(dim)
 
 
-dimension(G, l_b_max + 1)
+
