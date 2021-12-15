@@ -5,7 +5,7 @@ from sklearn.linear_model import LinearRegression
 import numpy as np
 
 
-G = nx.erdos_renyi_graph(100, 0.1)
+#G = nx.erdos_renyi_graph(100, 0.1) test
 l_b_max = nx.diameter(G)
 
 
