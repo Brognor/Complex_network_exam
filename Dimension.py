@@ -1,7 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import math
-from sklearn.linear_model import LinearRegression
 import numpy as np
 
 
@@ -29,18 +28,24 @@ def Greedy_coloring(G):
     return d
 
 
-def dimension(G, l_b_max):
+def Dimension(G, l_b_max):
     N_bs = np.zeros(l_b_max)
     l_bs = np.zeros(l_b_max)
-    for l_b in range(1, l_b_max+1, 1):
+    for l_b in range(1, l_b_max + 1, 1):
         G1 = G_prime(G, l_b)
         d = Greedy_coloring(G1)
+        nx.draw(G, nodes_color=color_maps, with_labels=True)
+        plt.show()
         N_b = len(set(d.values()))
-        N_bs[l_b] = N_b
-        l_bs[l_b] = l_b
-    l_bs = l_bs.reshape(-1, 1)
-    model = LinearRegression().fit(l_bs, N_bs)
-    dim = -model.coef_
+        N_bs[l_b - 1] = N_b
+        l_bs[l_b - 1] = l_b
+    print(N_bs)
+    print(l_bs)
+    N_bs_log = np.log(N_bs)
+    l_bs_log = np.log(l_bs)
+    slope, intercept = np.polyfit(l_bs_log, N_bs_log, 1)
+
+    dim = -slope
     print(dim)
 
 
