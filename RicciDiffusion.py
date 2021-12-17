@@ -76,3 +76,12 @@ def RicciEvolve_sign (G,vec,n_step):
         else: 
             print("mass is not conserved, something happened")
             break
+      return vec
+           
+         
+  def Evolution_Flow(G, vec, n_step):
+    for i in range(n_step):
+        vec = RicciEvolve_sign(G, vec, 1)
+        orc = OllivierRicci(G)
+        orc.compute_ricci_flow(1)
+        G = orc.G.copy()
