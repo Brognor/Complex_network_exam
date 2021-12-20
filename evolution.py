@@ -1,6 +1,7 @@
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import imageio
 import scipy.sparse as sp 
 import os
@@ -72,17 +73,20 @@ def evolution_collection(G,vec,n_step,norm=True):
 
 #############################à
 
-def plot_evolution(G,vec,norm=True,lenght=15,height=15,node_dimension=300,K=0.5):
+def plot_evolution(G,vec,norm=True,lenght=15,height=15,node_dimension=300,K=0.5,label=True):
     if norm:
         vec=normalize(vec)
     plt.figure(figsize=(lenght,height)) 
     layout=nx.spring_layout(G,k=K)
-    nx.draw_networkx(G,pos=layout,labels={n: np.around(vec,2)[n] for n in G},node_color=vec,cmap=plt.cm.Reds,node_size=node_dimension)
+    nx.draw_networkx(G,pos=layout,labels={n: np.around(vec,2)[n] for n in G},node_color=vec,cmap=plt.cm.Reds,node_size=node_dimension,with_labels=label)
+    Norm=mpl.colors.Normalize(min(vec),max(vec))
+    plt.colorbar(plt.cm.ScalarMappable(norm=Norm,cmap=plt.cm.Reds))
+    
 
 
     #######################################
 
-def plot_all_evolution(G,vec_collection,norm=True,saveall=False,lenght=15,height=15,pause=1,node_dimension=300,K=0.5):
+def plot_all_evolution(G,vec_collection,norm=True,saveall=False,lenght=15,height=15,pause=1,node_dimension=300,K=0.5,label=True):
 
     """Take an array of vector and a graph, each element of the vector represent the label of the node and create a gif.
     The i-th image of the gif is the graph with the label in the i-th vector of the array"""
@@ -98,19 +102,22 @@ def plot_all_evolution(G,vec_collection,norm=True,saveall=False,lenght=15,height
     for vec in vec_collection:
 
         plt.figure(figsize=(lenght,height))  #adjustable lenght and height
-        nx.draw_networkx(G,pos=layout,labels={n: np.around(vec,2)[n] for n in G},node_color=vec,cmap=plt.cm.Reds,node_size=node_dimension)
+        nx.draw_networkx(G,pos=layout,labels={n: np.around(vec,2)[n] for n in G},node_color=vec,cmap=plt.cm.Reds,vmin=min(vec), vmax=max(vec),node_size=node_dimension,with_labels=label)
         filename = f'{numerfig}.png'
         filenames.append(filename)
+        Norm=mpl.colors.Normalize(min(vec),max(vec))
 
         
        
         plt.title('step%s' %numerfig)
+        plt.colorbar(plt.cm.ScalarMappable(norm=Norm,cmap=plt.cm.Reds))
         plt.savefig(filename)
         plt.clf()
         numerfig=numerfig+1
         plt.close() #useful to avoid memory problems
 
-    images=[]
+    images=[]        
+
 
     for filename in filenames:
         images.append(imageio.imread(filename))
@@ -125,5 +132,13 @@ def plot_all_evolution(G,vec_collection,norm=True,saveall=False,lenght=15,height
     ####################################
 
 
+
+
+
+
+
+
+
+    
 
 
