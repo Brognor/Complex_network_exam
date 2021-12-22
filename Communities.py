@@ -3,7 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
 
-def Communities(Laplacian):
+def Communities(G):
+    Laplacian = nx.linalg.laplacianmatrix.laplacian_matrix(G)
     w, v = linalg.eig(Laplacian)
     w = w.real
     u = w
