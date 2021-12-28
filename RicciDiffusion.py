@@ -51,28 +51,60 @@ def RicciEvolve (G,vec,n_step):
 
 def OllivierRicciEvolve_sign (G,vec,n_step):
    
+    weights = {}
+    G_copy = G
+
+    # setting the weights on the nodes according to vex
+    for n in range(len(vec)):
+        weights[n] = vec[n]
+
+    # starting the real diffusion
+
     for t in range(n_step):
+
+        # new weights on the nodes
+
+        nx.set_node_attributes(G,weights,'weight')
+        print('iteration %i, setting new weights' % t)
+
+        # new curvature
+
+        orc_G = OllivierRicci(G_copy)
+        orc_G.compute_ricci_curvature()
+        G_copy = orc_G.G.copy()
+
+        # W[n] is the sum of the curvatures of all the links
+        # connected to the node n (only negative matter here)
+
         W = [0] * len(list(G.nodes))
         for n1 in list(G.nodes):
             for n2 in list(G.neighbors(n1)):
-               if(G[n1][n2]["ricciCurvature"]<0):
-                  W[n1] += abs(G[n1][n2]["ricciCurvature"])
+               if(G_copy[n1][n2]["ricciCurvature"]<0):
+                    W[n1] += abs(G[n1][n2]["ricciCurvature"])
     
         norm_vec = [0] * len(vec)
-        vec_copy = vec
+        
         for i in list(G.nodes):
             if W[i] != 0:
-                norm_vec[i] = vec[i]/W[i]
+                norm_vec[i] = weights[i]/W[i]
     
         for n1 in list(G.nodes):
             for n2 in list(G.neighbors(n1)):
-                if(G[n1][n2]["ricciCurvature"]<0):
-                  vec[n1] += abs(G[n1][n2]["ricciCurvature"]) * norm_vec[n2]
-                  vec[n2] -= abs(G[n1][n2]["ricciCurvature"]) * norm_vec[n2]
+                if ((G_copy[n1][n2]["ricciCurvature"]<0) and (n1<n2)):
+                  random_parameter = random.uniform(0,1)
+                  if random_parameter < 0.5:
+                    weights[n1] += abs(G_copy[n1][n2]["ricciCurvature"]) * norm_vec[n2]
+                    weights[n2] -= abs(G_copy[n1][n2]["ricciCurvature"]) * norm_vec[n2]
+                  else:
+                    weights[n2] += abs(G_copy[n1][n2]["ricciCurvature"]) * norm_vec[n1]
+                    weights[n1] -= abs(G_copy[n1][n2]["ricciCurvature"]) * norm_vec[n1]
 
-        vec = vec_copy
+    vec_copy = [0] * len(vec)
 
-    return vec
+    for n in range(len(vec)):
+        vec_copy[n] = weights[n]
+    
+    return vec_copy      
 
 def FormanRicciEvolve_sign (G,vec,n_step):
     
@@ -104,8 +136,8 @@ def FormanRicciEvolve_sign (G,vec,n_step):
         W = [0] * len(list(G.nodes))
         for n1 in list(G.nodes):
             for n2 in list(G.neighbors(n1)):
-               if(G[n1][n2]["formanCurvature"]<0):
-                    W[n1] += abs(G[n1][n2]["formanCurvature"])
+               if(G_copy[n1][n2]["formanCurvature"]<0):
+                    W[n1] += abs(G_copy[n1][n2]["formanCurvature"])
     
         norm_vec = [0] * len(vec)
         
@@ -115,21 +147,21 @@ def FormanRicciEvolve_sign (G,vec,n_step):
     
         for n1 in list(G.nodes):
             for n2 in list(G.neighbors(n1)):
-                if ((G[n1][n2]["formanCurvature"]<0) and (n1<n2)):
+                if ((G_copy[n1][n2]["formanCurvature"]<0) and (n1<n2)):
                   random_parameter = random.uniform(0,1)
                   if random_parameter < 0.5:
-                    weights[n1] += abs(G[n1][n2]["formanCurvature"]) * norm_vec[n2]
-                    weights[n2] -= abs(G[n1][n2]["formanCurvature"]) * norm_vec[n2]
+                    weights[n1] += abs(G_copy[n1][n2]["formanCurvature"]) * norm_vec[n2]
+                    weights[n2] -= abs(G_copy[n1][n2]["formanCurvature"]) * norm_vec[n2]
                   else:
-                    weights[n2] += abs(G[n1][n2]["formanCurvature"]) * norm_vec[n1]
-                    weights[n1] -= abs(G[n1][n2]["formanCurvature"]) * norm_vec[n1]
+                    weights[n2] += abs(G_copy[n1][n2]["formanCurvature"]) * norm_vec[n1]
+                    weights[n1] -= abs(G_copy[n1][n2]["formanCurvature"]) * norm_vec[n1]
 
     vec_copy = [0] * len(vec)
 
     for n in range(len(vec)):
         vec_copy[n] = weights[n]
     
-    return vec_copy        
+    return vec_copy           
          
 def OllivierEvolution_Flow(G, vec, n_step):
     for i in range(n_step):
