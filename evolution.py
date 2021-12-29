@@ -9,35 +9,39 @@ import os
 """Small library to implement Laplacian evolution"""
 
 
-def normalize(v): #Normalize the vector given as input
-    norm = np.linalg.norm(v)
-    if norm == 0: 
-       return v
-    return v / norm
+def normalize(v): #Normalize the vector given as input with the 1-norm
+    v=np.array(v)
+    return v/sum(v)
+
 
 
 def A(G):
-    return nx.linalg.graphmatrix.adjacency_matrix(G) #A is initizalized as the adjacency matrix of the graph
+    A=nx.adjacency_matrix(G) #A is initizalized as the adjacency matrix of the graph
+    return sp.csr_matrix.toarray(A)
 
 def L(G):
-    return nx.linalg.laplacianmatrix.laplacian_matrix(G) #L is initizalized as the lapalcian matrix of the graph
+    L=nx.laplacian_matrix(G) #L is initizalized as the lapalcian matrix of the graph
+    return sp.csr_matrix.toarray(L)
 
 def D(G):
-    return ( L(G)+ A(G) ) #D is the degree matrix
+    return ( L(G)+ A(G) )#D is the degree matrix
+
+def L_t(G):
+    return (D(G)-A(G))*(np.linalg.inv(D(G)))
+
 
 def transition_matrix(G):
     if nx.is_connected(G):
-        return (A(G)*(np.linalg.inv(D(G).toarray())))
+        return np.matmul(A(G),np.linalg.inv(D(G)))
     else: 
-        A_mod=sp.csr_matrix.toarray(A(G))
-        D_mod=sp.csr_matrix.toarray(D(G))
+        
+        A_mod=A(G)
+        D_mod=D(G)
         for i in list(nx.isolates(G)):
             A_mod[i][i]+=1
             D_mod[i][i]+=1
-        A_mod=sp.csr_matrix(A_mod)
-        D_mod=sp.csr_matrix(D_mod)
 
-        return (A_mod*(np.linalg.inv(D_mod.toarray())))
+        return np.matmul(A_mod,np.linalg.inv(D_mod))
 
 
 
@@ -50,8 +54,13 @@ def evolution(G,vec,n_step,norm=True):
     if norm is true it normalize the input vector"""
     if norm:
         vec=normalize(vec)
+    T=transition_matrix(G)
+    
+
     for i in range(n_step):
-        vec=transition_matrix(G).dot(vec)
+        vec=np.dot(T,vec)
+        
+   
     return vec
 
 ########################
@@ -65,19 +74,21 @@ def evolution_collection(G,vec,n_step,norm=True):
     if norm:
         vec=normalize(vec)
     graph_array[0]=vec
+    T=transition_matrix(G)
+
     for i in range(n_step):
-        vec=transition_matrix(G).dot(vec)
+        vec=np.dot(T,vec)
         graph_array[i+1]=vec
     return graph_array
 
 
 #############################à
 
-def plot_evolution(G,vec,norm=True,lenght=15,height=15,node_dimension=300,K=0.5,label=True):
+def plot_evolution(G,vec,norm=True,lenght=15,height=15,node_dimension=300,layout=nx.spring_layout,label=True):
     if norm:
         vec=normalize(vec)
     plt.figure(figsize=(lenght,height)) 
-    layout=nx.spring_layout(G,k=K)
+    layout=layout
     nx.draw_networkx(G,pos=layout,labels={n: np.around(vec,2)[n] for n in G},node_color=vec,cmap=plt.cm.Reds,node_size=node_dimension,with_labels=label)
     Norm=mpl.colors.Normalize(min(vec),max(vec))
     plt.colorbar(plt.cm.ScalarMappable(norm=Norm,cmap=plt.cm.Reds))
@@ -86,7 +97,7 @@ def plot_evolution(G,vec,norm=True,lenght=15,height=15,node_dimension=300,K=0.5,
 
     #######################################
 
-def plot_all_evolution(G,vec_collection,norm=True,saveall=False,lenght=15,height=15,pause=1,node_dimension=300,K=0.5,label=True):
+def plot_all_evolution(G,vec_collection,norm=True,saveall=False,lenght=15,height=15,pause=1,node_dimension=300,label=True,layout=nx.spring_layout):
 
     """Take an array of vector and a graph, each element of the vector represent the label of the node and create a gif.
     The i-th image of the gif is the graph with the label in the i-th vector of the array"""
@@ -97,7 +108,7 @@ def plot_all_evolution(G,vec_collection,norm=True,saveall=False,lenght=15,height
     filenames=[]
     numerfig=1
 
-    layout=nx.spring_layout(G,k=K) #needed to avoid different spring in each figure
+    layout=layout #needed to avoid different spring in each figure
 
     for vec in vec_collection:
 
