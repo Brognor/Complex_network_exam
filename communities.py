@@ -47,7 +47,7 @@ def plot_ricci_communities(G,dictionary,layout=nx.spring_layout): #dictionary is
             nodes_community[key]=value
             node_colors[key]=colors[value]
     fig=plt.figure()
-    nx.draw_networkx(G,node_color =node_colors, with_labels=True,layout=layout )
+    nx.draw_networkx(G,node_color =node_colors, with_labels=True,pos=layout )
 
     fig.savefig('communities_ricci.png')
     
