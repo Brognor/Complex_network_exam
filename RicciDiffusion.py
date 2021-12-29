@@ -3,7 +3,7 @@
 
 # the quantity which must be difused is 
 # represented as a vector 
-
+import networkx as nx
 import math
 import importlib
 import time
