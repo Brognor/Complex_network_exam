@@ -7,9 +7,11 @@ community.py library containing community detection with classic method and ricc
 
 evolution.py library to realize the flow of a quantity over a graph
 
-time test run the different alghoritms calculating time vs number of nodes
+time test run the different algorithms calculating time vs number of nodes
 
-plot realizes graphes of timetests
+datatime files contain the time data
+
+plot realizes graphics of timetests
 
 fit realize fit of timetest
 
