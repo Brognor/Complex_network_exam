@@ -84,12 +84,12 @@ def evolution_collection(G,vec,n_step,norm=True):
 
 #############################à
 
-def plot_evolution(G,vec,norm=True,lenght=15,height=15,node_dimension=300,layout=nx.spring_layout,label=True):
+def plot_evolution(G,vec,layout,norm=True,lenght=15,height=15,node_dimension=300,label=True):
     if norm:
         vec=normalize(vec)
     plt.figure(figsize=(lenght,height)) 
     layout=layout
-    nx.draw_networkx(G,pos=layout,labels={n: np.around(vec,2)[n] for n in G},node_color=vec,cmap=plt.cm.Reds,node_size=node_dimension,with_labels=label)
+    nx.draw_networkx(G,labels={n: np.around(vec,2)[n] for n in G},node_color=vec,pos=layout,cmap=plt.cm.Reds,node_size=node_dimension,with_labels=label)
     Norm=mpl.colors.Normalize(min(vec),max(vec))
     plt.colorbar(plt.cm.ScalarMappable(norm=Norm,cmap=plt.cm.Reds))
     
@@ -97,7 +97,7 @@ def plot_evolution(G,vec,norm=True,lenght=15,height=15,node_dimension=300,layout
 
     #######################################
 
-def plot_all_evolution(G,vec_collection,norm=True,saveall=False,lenght=15,height=15,pause=1,node_dimension=300,label=True,layout=nx.spring_layout):
+def plot_all_evolution(G,vec_collection,layout,norm=True,saveall=False,lenght=15,height=15,pause=1,node_dimension=300,label=True):
 
     """Take an array of vector and a graph, each element of the vector represent the label of the node and create a gif.
     The i-th image of the gif is the graph with the label in the i-th vector of the array"""
@@ -141,6 +141,16 @@ def plot_all_evolution(G,vec_collection,norm=True,saveall=False,lenght=15,height
 
 
     ####################################
+
+
+
+
+
+
+
+
+
+    
 
 
 
