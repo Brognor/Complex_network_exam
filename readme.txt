@@ -6,7 +6,7 @@ communities.py library containing community detection with classic method and ri
 
 evolution.py library to realize the flow of a quantity over a graph
 
-time test run the different algorithms calculating time vs number of nodes
+timetest run the different algorithms calculating time vs number of nodes
 
 datatime files contain the time data
 
