@@ -2,7 +2,7 @@
 
 Atlas.py contain many example of graphs used
 
-community.py library containing community detection with classic method and ricci flow
+communities.py library containing community detection with classic method and ricci flow
 
 evolution.py library to realize the flow of a quantity over a graph
 
