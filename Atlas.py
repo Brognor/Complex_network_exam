@@ -100,3 +100,13 @@ nx.draw_networkx(G, pos=pos, arrows=True, with_labels=True) #istanza di draw_net
 
 
 plt.show()
+
+#zackary karate club
+
+G = nx.karate_club_graph()
+print("Node Degree")
+for v in G:
+    print(f"{v:4} {G.degree(v):6}")
+
+nx.draw_circular(G, with_labels=True)
+plt.show()
