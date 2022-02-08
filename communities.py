@@ -16,7 +16,7 @@ def ricci_communities(G,iterations=20):
     return orc_G.ricci_community()
 
 
-def plot_classic_communities(G,community_list,layout=nx.spring_layout): #input is an array of arrays containing node number of each community of G
+def plot_classic_communities(G,community_list): #input is an array of arrays containing node number of each community of G
 
     node_groups = []
     for com in next(community_list):
@@ -30,7 +30,7 @@ def plot_classic_communities(G,community_list,layout=nx.spring_layout): #input i
                 colormap.append(colors[i])
 
     fig=plt.figure()
-    nx.draw_networkx(G, node_color=colormap, with_labels=True,pos=layout)
+    nx.draw_networkx(G, node_color=colormap, with_labels=True,pos=nx.spring_layout(G))
 
     
 
@@ -39,7 +39,7 @@ def plot_classic_communities(G,community_list,layout=nx.spring_layout): #input i
 
 
 
-def plot_ricci_communities(G,dictionary,layout=nx.spring_layout): #dictionary is the cmmunity dictionary given by ricci_communities    
+def plot_ricci_communities(G,dictionary): #dictionary is the cmmunity dictionary given by ricci_communities    
     N = len(G.nodes)
     nodes_community = [0]*N  
     node_colors =  [0]*N 
@@ -47,7 +47,7 @@ def plot_ricci_communities(G,dictionary,layout=nx.spring_layout): #dictionary is
             nodes_community[key]=value
             node_colors[key]=colors[value]
     fig=plt.figure()
-    nx.draw_networkx(G,node_color =node_colors, with_labels=True,pos=layout )
+    nx.draw_networkx(G,node_color =node_colors, with_labels=True,pos=nx.spring_layout(G))
 
     fig.savefig('communities_ricci.png')
     
