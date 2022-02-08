@@ -30,7 +30,7 @@ def plot_classic_communities(G,community_list,layout=nx.spring_layout): #input i
                 colormap.append(colors[i])
 
     fig=plt.figure()
-    nx.draw_networkx(G, node_color=colormap, with_labels=True,layout=layout)
+    nx.draw_networkx(G, node_color=colormap, with_labels=True,pos=layout)
 
     
 
